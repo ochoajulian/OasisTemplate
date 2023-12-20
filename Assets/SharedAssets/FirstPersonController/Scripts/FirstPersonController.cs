@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Purchasing;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -17,7 +18,7 @@ namespace StarterAssets
 		[Tooltip("Sprint speed of the character in m/s")]
 		public float SprintSpeed = 6.0f;
 		[Tooltip("Rotation speed of the character")]
-		public float RotationSpeed = 1.0f;
+		public float RotationSpeed = 9.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
 
@@ -112,15 +113,20 @@ namespace StarterAssets
 
 		private void Update()
 		{
-			JumpAndGravity();
-			GroundedCheck();
-			Move();
-			IsLookingAt();
+			if (!PauseMenu.gamePaused)
+			{
+				JumpAndGravity();
+				GroundedCheck();
+				Move();
+			}
 		}
 
 		private void LateUpdate()
 		{
-			CameraRotation();
+			if(!PauseMenu.gamePaused)
+			{
+				CameraRotation();
+			}
 		}
 
 		private void GroundedCheck()
@@ -130,6 +136,35 @@ namespace StarterAssets
 			Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
 		}
 
+		private bool invertY;
+		public void invertYMethod()
+		{
+			invertY = !invertY;
+		}
+
+		public float SensitivityDropdown(int val)
+		{
+			//Perfect
+			if (val == 0)
+			{
+				RotationSpeed = 9.0f;
+			}
+			
+			//Slow
+			if (val == 1)
+			{
+				RotationSpeed = 4.5f;
+			}
+			
+			//Fast
+			if (val == 2)
+			{
+				RotationSpeed = 18.0f;
+			}
+			
+			return RotationSpeed;
+		}
+		
 		private void CameraRotation()
 		{
 			// if there is an input
@@ -137,8 +172,16 @@ namespace StarterAssets
 			{
 				//Don't multiply mouse input by Time.deltaTime
 				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+
+				if (invertY)
+				{
+					_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
+				}
+				else
+				{
+					_cinemachineTargetPitch += -_input.look.y * RotationSpeed * deltaTimeMultiplier;
+				}
 				
-				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
 				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
 
 				// clamp our pitch rotation
@@ -200,11 +243,6 @@ namespace StarterAssets
 			{
 				_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 			}
-			
-		}
-
-		private void IsLookingAt()
-		{
 			
 		}
 

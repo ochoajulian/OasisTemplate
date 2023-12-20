@@ -51,7 +51,7 @@ public class PlayerManager : MonoBehaviour
         if (m_FlythroughWhenIdle && m_TimeIdle > m_IdleTransitionTime && !m_InFlythrough)
         {
             m_TimeIdle = 0;
-            EnableFlythrough();
+            //EnableFlythrough();
         }
         #if UNITY_EDITOR
         if(m_HasFocus) m_TimeIdle += Time.unscaledDeltaTime;
