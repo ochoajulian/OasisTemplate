@@ -20,6 +20,10 @@ public class PauseMenu : MonoBehaviour
         }
         
         pausedAction = _playerInput.actions["Pause"];
+        
+        Time.timeScale = 1.0f;
+        gamePaused = false;
+        PauseUI();
     }
 
     private void Update()

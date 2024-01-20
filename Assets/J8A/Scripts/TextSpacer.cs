@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class TextSpacing : MonoBehaviour
+public class TextSpacer : MonoBehaviour
 {
     private TextMeshProUGUI tmPro;
     [SerializeField] private float speed = 0.01f;

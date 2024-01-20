@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StartGame : MonoBehaviour
@@ -13,10 +14,10 @@ public class StartGame : MonoBehaviour
 
     public void FadeToBlack()
     {
-        StartCoroutine(ImageFade(blackImage, 255.0f, 1000.0f));
+        StartCoroutine(ImageFadeThenLoadScene(blackImage, 255.0f, 1000.0f));
     }
     
-    public IEnumerator ImageFade(Image image, float endValue, float duration)
+    public IEnumerator ImageFadeThenLoadScene(Image image, float endValue, float duration)
     {
         float elapsedTime = 0;
         float startValue = image.color.a;
@@ -25,8 +26,13 @@ public class StartGame : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float newAlpha = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
             image.color = new Color(image.color.r, image.color.g, image.color.b, newAlpha);
+            
+            if (newAlpha >= 1)
+            {
+                SceneManager.LoadScene(1);
+            }
+            
             yield return null;
-            Debug.Log("done fading");
         }
     }
 }
